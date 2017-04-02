@@ -1,3 +1,10 @@
+.DS_Store
+.classpath
+.project
+.settings/
+global-groovy.log
+soapui.log
+dependency-reduced-pom.xml
 target/
 pom.xml.tag
 pom.xml.releaseBackup
