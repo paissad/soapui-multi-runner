@@ -1,2 +1,2 @@
-# soapui-multi-runner
-Tool built in Java which permit the execution of multiple SoapUI projects
+# soapui-multi-tesrunner
+Tool built in Java which permits the execution of multiple SoapUI projects
