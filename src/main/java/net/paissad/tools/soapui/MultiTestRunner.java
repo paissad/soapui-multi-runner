@@ -25,9 +25,11 @@ import net.paissad.tools.soapui.exception.ProcessBuilderException;
 
 public class MultiTestRunner {
 
-	private static final Logger		LOGGER					= (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(MultiTestRunner.class);
+	private static final Logger		LOGGER						= (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(MultiTestRunner.class);
 
-	private static final String		MULTI_TEST_RUNNER_TAG	= "[MultiTestRunner]";
+	private static final String		SOAPUI_PROJECT_LONG_SUFFIX	= "-soapui-project.xml";
+
+	private static final String		MULTI_TEST_RUNNER_TAG		= "[MultiTestRunner]";
 
 	@Getter
 	private MultiTestRunnerOptions	options;
@@ -65,7 +67,7 @@ public class MultiTestRunner {
 			LOGGER.error(MULTI_TEST_RUNNER_TAG + " " + projectsDirPath + " is not a directory");
 
 		} else {
-			try (final DirectoryStream<Path> stream = Files.newDirectoryStream(projectsDirPath, "*-soapui-project.xml")) {
+			try (final DirectoryStream<Path> stream = Files.newDirectoryStream(projectsDirPath, "*" + SOAPUI_PROJECT_LONG_SUFFIX)) {
 
 				final List<String> minimalCommand = new LinkedList<>(
 				        Arrays.asList(new String[] { testRunnerPath.normalize().toString(), "-r", "-a", "-j", "-J" }));
@@ -186,8 +188,8 @@ public class MultiTestRunner {
 	        throws ProcessBuilderException {
 
 		// Check the existence of the properties file , first !
-		final Path propertiesPath = Paths.get(projectPath.getParent().normalize().toString(),
-		        projectPath.getFileName().toString().replaceAll("(.*?)-soapui-project.xml.*", "$1." + type.name().toLowerCase() + ".properties"));
+		final Path propertiesPath = Paths.get(projectPath.getParent().normalize().toString(), projectPath.getFileName().toString()
+		        .replaceAll("(.*?)" + SOAPUI_PROJECT_LONG_SUFFIX + ".*", "$1." + type.name().toLowerCase() + ".properties"));
 
 		if (Files.isRegularFile(propertiesPath) && Files.isReadable(propertiesPath)) {
 
