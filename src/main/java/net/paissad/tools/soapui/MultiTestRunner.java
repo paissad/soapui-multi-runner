@@ -212,7 +212,7 @@ public class MultiTestRunner {
 	}
 
 	/**
-	 * Reads the specified properties files, assign the properties to the specified property type flag, and add them to the command.
+	 * Reads the specified properties file, assign the properties to the specified property type flag, and add them to the command.
 	 * 
 	 * @param propertiesPath - The properties file.
 	 * @param command - The command to populate

@@ -60,7 +60,7 @@ public class PropertiesBuilder {
 				getResult().add(prefix);
 				getPrettyResult().append(prefix);
 
-				getResult().add(key + "=" + value + " ");
+				getResult().add(key + "=" + value);
 				getPrettyResult().append(key).append("=").append(value).append(" ");
 			}
 
