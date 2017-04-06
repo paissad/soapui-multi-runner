@@ -167,7 +167,7 @@ public class MultiTestRunner {
 	 * @param runnerCommand
 	 * @throws ProcessBuilderException
 	 */
-	private void addDefaultSystemAndGlobalProps(final MultiTestRunnerOptions options, final List<String> runnerCommand)
+	public void addDefaultSystemAndGlobalProps(final MultiTestRunnerOptions options, final List<String> runnerCommand)
 	        throws ProcessBuilderException {
 
 		LOGGER.debug("Checking for default system.properties file");
