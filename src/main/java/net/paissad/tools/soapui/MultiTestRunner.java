@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
+import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.slf4j.LoggerFactory;
 import org.zeroturnaround.exec.InvalidExitValueException;
@@ -43,7 +44,13 @@ public class MultiTestRunner {
 		setLoggingLevel("INFO");
 
 		final MultiTestRunner runner = new MultiTestRunner();
-		final CmdLineParser parser = runner.getOptions().parseOptionsAndExitOnError(args);
+		CmdLineParser parser = null;
+		try {
+			parser = runner.getOptions().parseOptions(args);
+		} catch (CmdLineException e1) {
+			LOGGER.trace("An error occured while parsing the options : {}", e1.getMessage());
+			System.exit(1);
+		}
 
 		if (runner.getOptions().isHelp()) {
 			MultiTestRunnerOptions.printUsage(parser);
@@ -57,13 +64,13 @@ public class MultiTestRunner {
 
 		// Check the testrunner requirements
 		final Path testRunnerPath = Paths.get(runner.getOptions().getTestRunnerPath());
-		if (!(Files.isRegularFile(testRunnerPath) && Files.isReadable(testRunnerPath) && Files.isExecutable(testRunnerPath))) {
+		if (!(testRunnerPath.toFile().isFile() && Files.isReadable(testRunnerPath) && Files.isExecutable(testRunnerPath))) {
 			LOGGER.error(MULTI_TEST_RUNNER_TAG + " " + testRunnerPath + " is not a file, or is not readable or not executable !");
 		}
 
 		// Parse the projects directory and execute testrunner for each *-soapui-project.xml file
 		final Path projectsDirPath = Paths.get(runner.getOptions().getProjectsDir());
-		if (!Files.isDirectory(projectsDirPath)) {
+		if (!projectsDirPath.toFile().isDirectory()) {
 			LOGGER.error(MULTI_TEST_RUNNER_TAG + " " + projectsDirPath + " is not a directory");
 
 		} else {
@@ -79,7 +86,7 @@ public class MultiTestRunner {
 					minimalCommand.add("-t");
 					minimalCommand.add(Paths.get(runner.getOptions().getSettingsFile()).normalize().toString());
 
-				} else if (Files.isRegularFile(runner.getProjectsSettingsFilePath())) {
+				} else if (runner.getProjectsSettingsFilePath().toFile().isFile()) {
 					minimalCommand.add("-t");
 					minimalCommand.add(runner.getProjectsSettingsFilePath().toString());
 
@@ -122,7 +129,7 @@ public class MultiTestRunner {
 	 */
 	private ResultSummary executeSoapuiProject(final Path projectPath, final List<String> command) throws MultiTestRunnerException {
 
-		if (Files.isRegularFile(projectPath)) {
+		if (projectPath.toFile().isFile()) {
 			try {
 				List<String> runnerCommand = new ArrayList<>(command);
 				runnerCommand.add(projectPath.normalize().toString());
@@ -165,7 +172,7 @@ public class MultiTestRunner {
 
 		LOGGER.debug("Checking for default system.properties file");
 		final Path defaultSystemPropertiesPath = Paths.get(options.getProjectsDir(), "settings/system.properties");
-		if (Files.isRegularFile(defaultSystemPropertiesPath)) {
+		if (defaultSystemPropertiesPath.toFile().isFile()) {
 			LOGGER.info("Found default global properties file : {}", defaultSystemPropertiesPath);
 			addProperties(defaultSystemPropertiesPath, runnerCommand, PROPERTY_TYPE.SYSTEM);
 
@@ -175,7 +182,7 @@ public class MultiTestRunner {
 
 		LOGGER.debug("Checking for default global.properties file");
 		final Path defaultGlobalPropertiesPath = Paths.get(options.getProjectsDir(), "settings/global.properties");
-		if (Files.isRegularFile(defaultGlobalPropertiesPath)) {
+		if (defaultGlobalPropertiesPath.toFile().isFile()) {
 			LOGGER.info("Found default global properties file : {}", defaultGlobalPropertiesPath);
 			addProperties(defaultGlobalPropertiesPath, runnerCommand, PROPERTY_TYPE.GLOBAL);
 
@@ -191,7 +198,7 @@ public class MultiTestRunner {
 		final Path propertiesPath = Paths.get(projectPath.getParent().normalize().toString(), projectPath.getFileName().toString()
 		        .replaceAll("(.*?)" + SOAPUI_PROJECT_LONG_SUFFIX + ".*", "$1." + type.name().toLowerCase() + ".properties"));
 
-		if (Files.isRegularFile(propertiesPath) && Files.isReadable(propertiesPath)) {
+		if (propertiesPath.toFile().isFile() && Files.isReadable(propertiesPath)) {
 
 			LOGGER.debug("{} properties file found for project {}", type.name(), projectPath.getFileName());
 			LOGGER.debug("Loading {} properties file {}", type.name(), propertiesPath.toString());
@@ -248,7 +255,7 @@ public class MultiTestRunner {
 		root.setLevel(level);
 	}
 
-	private static enum PROPERTY_TYPE {
+	private enum PROPERTY_TYPE {
 		SYSTEM, GLOBAL, PROJECT;
 	}
 }

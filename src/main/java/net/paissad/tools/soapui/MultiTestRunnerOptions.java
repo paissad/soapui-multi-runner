@@ -40,8 +40,9 @@ public class MultiTestRunnerOptions {
 	/**
 	 * @param args : arguments / options.
 	 * @return The command line parser.
+	 * @throws CmdLineException If an error occurs while parsing the options. 
 	 */
-	public CmdLineParser parseOptionsAndExitOnError(final String[] args) {
+	public CmdLineParser parseOptions(final String[] args) throws CmdLineException {
 
 		final CmdLineParser parser = new CmdLineParser(this);
 
@@ -57,7 +58,7 @@ public class MultiTestRunnerOptions {
 				System.err.println("======> " + e.getMessage());
 				System.err.println();
 				printUsage(parser);
-				System.exit(1);
+				throw e;
 			}
 		}
 
@@ -77,7 +78,7 @@ public class MultiTestRunnerOptions {
 		System.out.println("  Example: soapui-multi-testrunner " + parser.printExample(new OptionHandlerFilter() {
 
 			public boolean select(@SuppressWarnings("rawtypes") final OptionHandler o) {
-				return (o != null && !o.option.help());
+				return o != null && !o.option.help();
 			}
 		}));
 	}
