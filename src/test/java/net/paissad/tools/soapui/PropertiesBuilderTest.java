@@ -68,4 +68,9 @@ public class PropertiesBuilderTest {
 		Assert.assertTrue(emptyPropsBuilder.getResult().isEmpty());
 	}
 
+	@Test(expected = ProcessBuilderException.class)
+	public void testNonExistentPropertiesFile() throws ProcessBuilderException {
+		examplePropsBuilder.buildProjectProperties(Paths.get("___ This file does not exit ___"));
+	}
+
 }
