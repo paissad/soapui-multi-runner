@@ -48,7 +48,7 @@ public class MultiTestRunner {
 		try {
 			parser = runner.getOptions().parseOptions(args);
 		} catch (CmdLineException e1) {
-			LOGGER.trace("An error occured while parsing the options : {}", e1.getMessage());
+			LOGGER.trace("An error occured while parsing the options", e1);
 			System.exit(1);
 		}
 
