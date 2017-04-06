@@ -11,6 +11,8 @@ import lombok.Getter;
 @Getter
 public class ResultSummary {
 
+	private static final String	MSG_BAR					= "==================================================================";
+
 	private static final Logger	LOGGER					= LoggerFactory.getLogger(ResultSummary.class);
 
 	private int					testSuitesCount			= 0;
@@ -123,16 +125,16 @@ public class ResultSummary {
 	 * @param resultSummary - The summary to print.
 	 */
 	public static void prettyPrint(final ResultSummary resultSummary) {
-		LOGGER.info("==================================================================");
+		LOGGER.info(MSG_BAR);
 		LOGGER.info("SOAPUI MultiTestRunner (" + getAppVersion() + ") : Results Summary");
-		LOGGER.info("==================================================================");
+		LOGGER.info(MSG_BAR);
 		LOGGER.info("Total TestSuites          : {}", resultSummary.getTestSuitesCount());
 		LOGGER.info("Total TestCases           : {} ({} failed)", resultSummary.getTestCasesCount(), resultSummary.getFailedTestCasesCount());
 		LOGGER.info("Total TestSteps           : {}", resultSummary.getTestStepsCount());
 		LOGGER.info("Total Request Assertions  : {}", resultSummary.getRequestAsserstionsCount());
 		LOGGER.info("Total Failed Assertions   : {}", resultSummary.getFailedAssertionsCount());
 		LOGGER.info("Total Exported Results    : {}", resultSummary.getExportedResultsCount());
-		LOGGER.info("==================================================================");
+		LOGGER.info(MSG_BAR);
 	}
 
 	private static String getAppVersion() {
