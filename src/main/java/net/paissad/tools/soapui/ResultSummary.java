@@ -89,9 +89,7 @@ public class ResultSummary {
 	}
 
 	public synchronized ResultSummary updateExitCode(int exitCode) {
-		if (exitCode != 0) {
-			this.exitCode = exitCode; // Always keep the last specified exit code if different of 0 !
-		}
+		this.exitCode = exitCode;
 		return this;
 	}
 

@@ -1,0 +1,9 @@
+SoapUI 5.3.0 TestCaseRunner Summary
+-----------------------------
+Time Taken: 1317ms
+Total TestSuites: 2
+Total TestCases: 4 (2 failed)
+Total TestSteps: 5
+Total Request Assertions: 2
+Total Failed Assertions: 0
+Total Exported Results: 11
