@@ -4,7 +4,9 @@ import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
@@ -13,6 +15,9 @@ public class MultiTestRunnerOptionsTest {
 	private MultiTestRunnerOptions	multiTestRunnerOptions;
 
 	private CmdLineParser			parser;
+
+	@Rule
+	public ExpectedException		thrown	= ExpectedException.none();
 
 	@Before
 	public void setUp() throws Exception {
@@ -68,8 +73,9 @@ public class MultiTestRunnerOptionsTest {
 		Assert.assertEquals(Arrays.asList(new String[] { "arg1", "arg2" }), multiTestRunnerOptions.getArguments());
 	}
 
-	@Test(expected = CmdLineException.class)
+	@Test
 	public void testUnrecognizedOptions() throws CmdLineException {
+		thrown.expect(CmdLineException.class);
 		multiTestRunnerOptions.parseOptions("--unknown-option");
 	}
 
