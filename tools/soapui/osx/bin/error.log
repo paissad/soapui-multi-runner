@@ -1,0 +1,21 @@
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+java.lang.NullPointerException
+	at com.sun.t2k.MacFontFinder.initPSFontNameToPathMap(MacFontFinder.java:339)
+	at com.sun.t2k.MacFontFinder.getAllAvailableFontFamilies(MacFontFinder.java:359)
+	at com.sun.t2k.T2KFontFactory.getFontFamilyNames(T2KFontFactory.java:1056)
+	at com.sun.webpane.sg.prism.WCFontImpl.getFont(WCFontImpl.java:37)
+	at com.sun.webpane.sg.prism.FXGraphicsManager.getWCFont(FXGraphicsManager.java:56)
+	at com.sun.webpane.webkit.Timer.twkFireTimerEvent(Native Method)
+	at com.sun.webpane.webkit.Timer.fireTimerEvent(Timer.java:66)
+	at com.sun.webpane.webkit.Timer.notifyTick(Timer.java:47)
+	at javafx.scene.web.WebEngine$PulseTimer$2.pulse(WebEngine.java:915)
+	at com.sun.javafx.tk.Toolkit$5.run(Toolkit.java:363)
+	at com.sun.javafx.tk.Toolkit$5.run(Toolkit.java:361)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at com.sun.javafx.tk.Toolkit.runPulse(Toolkit.java:361)
+	at com.sun.javafx.tk.Toolkit.firePulse(Toolkit.java:384)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.pulse(QuantumToolkit.java:463)
+	at com.sun.javafx.tk.quantum.QuantumToolkit$9.run(QuantumToolkit.java:332)
+	at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:76)

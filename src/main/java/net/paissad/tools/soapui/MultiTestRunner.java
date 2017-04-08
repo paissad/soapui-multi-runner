@@ -40,38 +40,45 @@ public class MultiTestRunner {
 	}
 
 	public static void main(final String[] args) throws MultiTestRunnerException {
+		System.exit(new MultiTestRunner().proxyMain(args));
+	}
+
+	public int proxyMain(String[] args) throws MultiTestRunnerException {
+
+		final int ok = 0;
 
 		setLoggingLevel("INFO");
 
-		final MultiTestRunner runner = new MultiTestRunner();
 		CmdLineParser parser = null;
 		try {
-			parser = runner.getOptions().parseOptions(args);
+			parser = getRunner().getOptions().parseOptions(args);
 		} catch (CmdLineException e1) {
 			LOGGER.trace("An error occured while parsing the options", e1);
-			System.exit(1);
+			return 1;
 		}
 
-		if (runner.getOptions().isHelp()) {
+		if (getRunner().getOptions().isHelp()) {
 			MultiTestRunnerOptions.printUsage(parser);
-			return;
+			return ok;
 		}
 
 		// Sets the log level if specified
-		if (runner.getOptions().getLogLevel() != null) {
-			setLoggingLevel(runner.getOptions().getLogLevel());
+		if (getRunner().getOptions().getLogLevel() != null) {
+			setLoggingLevel(getRunner().getOptions().getLogLevel());
 		}
 
 		// Check the testrunner requirements
-		final Path testRunnerPath = Paths.get(runner.getOptions().getTestRunnerPath());
+		final Path testRunnerPath = Paths.get(getRunner().getOptions().getTestRunnerPath());
 		if (!(testRunnerPath.toFile().isFile() && Files.isReadable(testRunnerPath) && Files.isExecutable(testRunnerPath))) {
 			LOGGER.error(MULTI_TEST_RUNNER_TAG + " " + testRunnerPath + " is not a file, or is not readable or not executable !");
+			return 2;
 		}
 
 		// Parse the projects directory and execute testrunner for each *-soapui-project.xml file
-		final Path projectsDirPath = Paths.get(runner.getOptions().getProjectsDir());
+		final Path projectsDirPath = Paths.get(getRunner().getOptions().getProjectsDir());
 		if (!projectsDirPath.toFile().isDirectory()) {
 			LOGGER.error(MULTI_TEST_RUNNER_TAG + " " + projectsDirPath + " is not a directory");
+			return 3;
 
 		} else {
 			try (final DirectoryStream<Path> stream = Files.newDirectoryStream(projectsDirPath, "*" + SOAPUI_PROJECT_LONG_SUFFIX)) {
@@ -80,22 +87,22 @@ public class MultiTestRunner {
 				        Arrays.asList(new String[] { testRunnerPath.normalize().toString(), "-r", "-a", "-j", "-J" }));
 
 				minimalCommand.add("-f");
-				minimalCommand.add(Paths.get(runner.getOptions().getOutputFolder()).normalize().toString());
+				minimalCommand.add(Paths.get(getRunner().getOptions().getOutputFolder()).normalize().toString());
 
-				if (runner.getOptions().getSettingsFile() != null) {
+				if (getRunner().getOptions().getSettingsFile() != null) {
 					minimalCommand.add("-t");
-					minimalCommand.add(Paths.get(runner.getOptions().getSettingsFile()).normalize().toString());
+					minimalCommand.add(Paths.get(getRunner().getOptions().getSettingsFile()).normalize().toString());
 
-				} else if (runner.getProjectsSettingsFilePath().toFile().isFile()) {
+				} else if (getRunner().getProjectsSettingsFilePath().toFile().isFile()) {
 					minimalCommand.add("-t");
-					minimalCommand.add(runner.getProjectsSettingsFilePath().toString());
+					minimalCommand.add(getRunner().getProjectsSettingsFilePath().toString());
 
 				} else {
 					// No specified settings, and no default settings available.
 				}
 
 				// Add default system & global properties located in 'settings' directory, if they exist
-				runner.addDefaultSystemAndGlobalProps(runner.getOptions(), minimalCommand);
+				getRunner().addDefaultSystemAndGlobalProps(getRunner().getOptions(), minimalCommand);
 
 				final ResultSummary globalResultSummary = new ResultSummary();
 				for (final Path path : stream) {
@@ -103,13 +110,13 @@ public class MultiTestRunner {
 					LOGGER.info(MULTI_TEST_RUNNER_TAG + " Picking SOAPUI Project : " + path.getFileName());
 					LOGGER.info(MULTI_TEST_RUNNER_TAG + " =============================================================================");
 
-					final ResultSummary rs = runner.executeSoapuiProject(path, minimalCommand);
+					final ResultSummary rs = getRunner().executeSoapuiProject(path, minimalCommand);
 					globalResultSummary.merge(rs);
 				}
 
 				ResultSummary.prettyPrint(globalResultSummary);
 
-				System.exit(globalResultSummary.getExitCode());
+				return globalResultSummary.getExitCode();
 
 			} catch (IOException | ProcessBuilderException e) {
 				final String errMsg = "Error while parsing projects directory ...";
@@ -154,7 +161,7 @@ public class MultiTestRunner {
 				throw new MultiTestRunnerException(errMsg, e);
 			}
 		} else {
-			final String errMsg = MULTI_TEST_RUNNER_TAG + " " + projectPath.getFileName() + "is not file.";
+			final String errMsg = MULTI_TEST_RUNNER_TAG + " " + projectPath.getFileName() + " is not file.";
 			LOGGER.error(errMsg);
 			throw new MultiTestRunnerException(errMsg);
 		}
@@ -244,6 +251,10 @@ public class MultiTestRunner {
 		command.addAll(propsBuilder.getResult());
 	}
 
+	private MultiTestRunner getRunner() {
+		return this;
+	}
+
 	private Path getProjectsSettingsFilePath() {
 		return Paths.get(getOptions().getProjectsDir(), "settings/soapui-settings.xml").normalize();
 	}
@@ -256,6 +267,6 @@ public class MultiTestRunner {
 	}
 
 	private enum PROPERTY_TYPE {
-		SYSTEM, GLOBAL, PROJECT;
+		SYSTEM, GLOBAL, PROJECT, OTHER;
 	}
 }
