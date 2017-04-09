@@ -104,6 +104,13 @@ public class MultiTestRunnerTest {
 	}
 
 	@Test
+	public void testMainWhenDefaultSettingsFileExists() throws URISyntaxException, MultiTestRunnerException, IOException {
+		final List<String> setupOptionsList = getSetupOptionsAsList("project_with_a_soapui_settings");
+		final String[] args = setupOptionsList.stream().toArray(size -> new String[size]);
+		Assert.assertEquals(0, this.multiTestRunner.proxyMain(args));
+	}
+
+	@Test
 	public void testMainGenuineSoapuiTestrunnerIsNotAFile() throws URISyntaxException, MultiTestRunnerException, IOException {
 		try {
 			genuineSoapuiTestrunnerPath = Files.createTempDirectory("");
@@ -148,6 +155,23 @@ public class MultiTestRunnerTest {
 		final List<String> setupOptionsList = getSetupOptionsAsList("soapui_project_is_dir");
 		final String[] args = setupOptionsList.stream().toArray(size -> new String[size]);
 		this.multiTestRunner.proxyMain(args);
+	}
+
+	@Test
+	public void testMainProjectWithItsOwnProperties() throws URISyntaxException, MultiTestRunnerException {
+		final List<String> setupOptionsList = getSetupOptionsAsList("project_one_project_props_with_project_conf");
+		final String[] args = setupOptionsList.stream().toArray(size -> new String[size]);
+		Assert.assertEquals(0, this.multiTestRunner.proxyMain(args));
+	}
+
+	@Test
+	public void testMainProjectWithItsOwnNonReadableProperties() throws URISyntaxException, MultiTestRunnerException {
+		final Path projectPath = getProjectDirSample("project_one_project_props_with_project_conf_non_readable");
+		final Path propertiesPath = Paths.get(projectPath.toString(), "Project-1.project.properties");
+		propertiesPath.toFile().setReadable(false);
+		final List<String> setupOptionsList = getSetupOptionsAsList("project_one_project_props_with_project_conf_non_readable");
+		final String[] args = setupOptionsList.stream().toArray(size -> new String[size]);
+		Assert.assertEquals(0, this.multiTestRunner.proxyMain(args));
 	}
 
 	/**

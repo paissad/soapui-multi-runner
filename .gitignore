@@ -15,4 +15,4 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 /Tests_SoapUI/
-/soapui-errors.log
+soapui-errors.log
