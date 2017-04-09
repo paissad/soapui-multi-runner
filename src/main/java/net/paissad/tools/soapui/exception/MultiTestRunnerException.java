@@ -9,7 +9,7 @@ public class MultiTestRunnerException extends Exception {
 	}
 
 	public MultiTestRunnerException(String errMsg) {
-		super(errMsg);
+		this(errMsg, null);
 	}
 
 }
