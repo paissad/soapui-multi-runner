@@ -69,6 +69,7 @@
         <version>3.0.0</version>
         <executions>
           <execution>
+            <id>package-executable-jar</id>
             <phase>package</phase>
             <goals>
               <goal>shade</goal>
@@ -79,6 +80,26 @@
                   <mainClass>net.paissad.tools.soapui.MultiTestRunner</mainClass>
                 </transformer>
               </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <id>create-archive</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <goal>single</goal>
+              <descriptors>
+                <descriptor>src/assembly/archive.xml</descriptor>
+              </descriptors>
+              <appendAssemblyId>false</appendAssemblyId>
             </configuration>
           </execution>
         </executions>

@@ -1,3 +1,9 @@
+`SoapUI Multi Testrunner` is a tool built with Java which permits the execution of multiple SoapUI projects.
+
+----------
+
+**Latest stable version** [![version][version-badge]][CHANGELOG]
+
 **Build Status** [![Travis Build Status](https://travis-ci.org/paissad/soapui-multi-testrunner.svg?branch=master)](https://travis-ci.org/paissad/soapui-multi-testrunner)
 
 **Quality Gate** <a href="https://sonarqube.com/dashboard/index/net.paissad.tools:soapui-multi-testrunner"><img alt="SoapUI Multi Runner Sonar Quality Gate" src="https://www.sonarqube.org/assets/logo-31ad3115b1b4b120f3d1efd63e6b13ac9f1f89437f0cf6881cc4d8b5603a52b4.svg" width="100px"></a>
@@ -17,7 +23,7 @@ Table of contents
 
 # About
 
-`SoapUI Multi Testrunner` is a tool built with Java which permits the execution of multiple SoapUI projects. Though, it relies on the genuine `SoapUI` testrunner.
+This project relies on the genuine `SoapUI` testrunner.
 With the genuine `SoapUI` software, it is not possible to execute multiple projects with th `testrunner` script.
 `Soapui Multi Testrunner` was built to fulfill that task.
 It also reduces the configuration needed to run multiple projects from one command line, based on conventions and hierarchization
@@ -66,4 +72,7 @@ It is possible to file bugs or enhancement requests here in the [GitHub Issues P
 
 `SoapUI` is licensed under the [EUPL, Version 1.1 license](https://raw.githubusercontent.com/SmartBear/soapui/next/LICENSE.md "SoapUI License"). It is not bundled into SoapUI Multi Testrunner.
 
+
+[CHANGELOG]: ./CHANGELOG.md
+[version-badge]: https://img.shields.io/badge/version-1.0.0-blue.svg
 
