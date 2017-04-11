@@ -115,6 +115,13 @@
         </configuration>
       </plugin>
     </plugins>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>2.12</version>
+      </extension>
+    </extensions>
   </build>
 
   <dependencies>
@@ -161,5 +168,13 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <distributionManagement>
+    <repository>
+      <id>sourceforge-repository</id>
+      <name>SourceForge SoapUI Multi Testrunner Repository (releases)</name>
+      <url>scp://frs.sourceforge.net:/home/frs/project/soapui-multi-testrunner/</url>
+    </repository>
+  </distributionManagement>
 
 </project>
