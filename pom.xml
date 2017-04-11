@@ -3,7 +3,7 @@
 
   <groupId>net.paissad.tools</groupId>
   <artifactId>soapui-multi-testrunner</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>y</version>
   <packaging>jar</packaging>
 
   <name>SoapUI Multi Testrunner</name>
@@ -29,6 +29,7 @@
     <connection>scm:git:https://github.com/paissad/soapui-multi-testrunner.git</connection>
     <developerConnection>scm:git:https://github.com/paissad/soapui-multi-testrunner.git</developerConnection>
     <url>https://github.com/paissad/soapui-multi-testrunner.git</url>
+    <tag>y</tag>
   </scm>
 
   <licenses>
