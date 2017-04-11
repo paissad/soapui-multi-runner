@@ -23,6 +23,7 @@ import org.kohsuke.args4j.CmdLineException;
 
 import net.paissad.tools.soapui.exception.MultiTestRunnerException;
 import net.paissad.tools.soapui.exception.ProcessBuilderException;
+import net.paissad.tools.soapui.util.PathUtils;
 
 public class MultiTestRunnerTest {
 
@@ -59,12 +60,6 @@ public class MultiTestRunnerTest {
 	public void tearDown() throws Exception {
 		FileUtils.deleteQuietly(this.projectOutputPath.toFile());
 	}
-
-	// @Test
-	// public void testMainNominalCase() throws MultiTestRunnerException, URISyntaxException {
-	// final List<String> setupOptionsList = getSetupOptionsAsList("project_one_project_props");
-	// MultiTestRunner.main(setupOptionsList);
-	// } // FIXME: update code !
 
 	@Test
 	public void testMainWrongOptionGiven() throws MultiTestRunnerException, URISyntaxException {
@@ -126,8 +121,8 @@ public class MultiTestRunnerTest {
 	}
 
 	@Test
-	public void testMainGenuineSoapuiTestrunnerIsNotReadable() throws URISyntaxException, MultiTestRunnerException {
-		genuineSoapuiTestrunnerPath.toFile().setReadable(false);
+	public void testMainGenuineSoapuiTestrunnerIsNotReadable() throws URISyntaxException, MultiTestRunnerException, IOException {
+		PathUtils.setReadable(genuineSoapuiTestrunnerPath, false);
 		final List<String> setupOptionsList = getSetupOptionsAsList("project_one_project_props");
 		final String[] args = setupOptionsList.stream().toArray(size -> new String[size]);
 		Assert.assertEquals(2, this.multiTestRunner.proxyMain(args));
@@ -135,10 +130,12 @@ public class MultiTestRunnerTest {
 
 	@Test
 	public void testMainGenuineSoapuiTestrunnerIsNotExecutable() throws URISyntaxException, MultiTestRunnerException {
-		genuineSoapuiTestrunnerPath.toFile().setExecutable(false);
-		final List<String> setupOptionsList = getSetupOptionsAsList("project_one_project_props");
-		final String[] args = setupOptionsList.stream().toArray(size -> new String[size]);
-		Assert.assertEquals(2, this.multiTestRunner.proxyMain(args));
+		if (!PathUtils.isWindows()) {
+			genuineSoapuiTestrunnerPath.toFile().setExecutable(false);
+			final List<String> setupOptionsList = getSetupOptionsAsList("project_one_project_props");
+			final String[] args = setupOptionsList.stream().toArray(size -> new String[size]);
+			Assert.assertEquals(2, this.multiTestRunner.proxyMain(args));
+		}
 	}
 
 	@Test
@@ -165,10 +162,10 @@ public class MultiTestRunnerTest {
 	}
 
 	@Test
-	public void testMainProjectWithItsOwnNonReadableProperties() throws URISyntaxException, MultiTestRunnerException {
+	public void testMainProjectWithItsOwnNonReadableProperties() throws URISyntaxException, MultiTestRunnerException, IOException {
 		final Path projectPath = getProjectDirSample("project_one_project_props_with_project_conf_non_readable");
 		final Path propertiesPath = Paths.get(projectPath.toString(), "Project-1.project.properties");
-		propertiesPath.toFile().setReadable(false);
+		PathUtils.setReadable(propertiesPath, false);
 		final List<String> setupOptionsList = getSetupOptionsAsList("project_one_project_props_with_project_conf_non_readable");
 		final String[] args = setupOptionsList.stream().toArray(size -> new String[size]);
 		Assert.assertEquals(0, this.multiTestRunner.proxyMain(args));
