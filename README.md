@@ -2,7 +2,7 @@
 
 ----------
 
-**Latest stable version** [![version][version-badge]][CHANGELOG]
+**Latest stable version** [![ChangeLog](https://img.shields.io/badge/version-1.0.0-blue.svg)](./CHANGELOG.md)
 
 **Build Status** [![Travis Build Status](https://travis-ci.org/paissad/soapui-multi-testrunner.svg?branch=master)](https://travis-ci.org/paissad/soapui-multi-testrunner)
 
@@ -71,8 +71,4 @@ It is possible to file bugs or enhancement requests here in the [GitHub Issues P
 `Soapui Multi Testrunner` is licensed under the [LGPL v3 license](https://raw.githubusercontent.com/paissad/soapui-multi-testrunner/master/LICENSE "License"). 
 
 `SoapUI` is licensed under the [EUPL, Version 1.1 license](https://raw.githubusercontent.com/SmartBear/soapui/next/LICENSE.md "SoapUI License"). It is not bundled into SoapUI Multi Testrunner.
-
-
-[CHANGELOG]: ./CHANGELOG.md
-[version-badge]: https://img.shields.io/badge/version-1.0.0-blue.svg
 
