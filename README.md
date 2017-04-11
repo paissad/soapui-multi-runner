@@ -29,7 +29,7 @@ With the genuine `SoapUI` software, it is not possible to execute multiple proje
 It also reduces the configuration needed to run multiple projects from one command line, based on conventions and hierarchization
 
 # Downloads
-Coming soon ! For now, just do a checkout of the project and build it with `mvn clean package` and the .tar.gz package will be available into the `target/` directory.
+Download release source [here](https://github.com/paissad/soapui-multi-testrunner/releases "GitHub Releases") and build it with `mvn clean package` and then retrieve the soapui-multi-testrunner-x.y.z.tar.gz package available into the `target/` directory.
 
 # Source
 
