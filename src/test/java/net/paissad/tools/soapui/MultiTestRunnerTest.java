@@ -52,7 +52,7 @@ public class MultiTestRunnerTest {
 		FileUtils.forceDeleteOnExit(this.projectOutputPath.toFile());
 		final String scriptName = "testrunner" + getGenuineSoapuiTestrunnerExtension();
 		genuineSoapuiTestrunnerPath = Paths.get(".", "tools/soapui/" + getOsName() + "/bin/" + scriptName);
-		genuineSoapuiTestrunnerPath.toFile().setReadable(true);
+		PathUtils.setReadable(genuineSoapuiTestrunnerPath, true);
 		genuineSoapuiTestrunnerPath.toFile().setExecutable(true);
 	}
 
