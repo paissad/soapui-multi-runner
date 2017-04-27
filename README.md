@@ -1,8 +1,8 @@
-`SoapUI Multi Testrunner` is a tool built with Java which permits the execution of multiple SoapUI projects.
+**SoapUI Multi Testrunner** is a tool built with Java which permits the execution of multiple SoapUI projects.
 
 ----------
 
-**Latest stable version** [![ChangeLog](https://img.shields.io/badge/version-1.0.0-blue.svg)](./CHANGELOG.md)
+**Latest stable version** [![ChangeLog](https://img.shields.io/badge/version-1.1.0-blue.svg)](./CHANGELOG.md)
 
 **Build Status** [![Travis Build Status](https://travis-ci.org/paissad/soapui-multi-testrunner.svg?branch=master)](https://travis-ci.org/paissad/soapui-multi-testrunner)
 
@@ -25,7 +25,7 @@ Table of contents
 
 This project relies on the genuine `SoapUI` testrunner.
 With the genuine `SoapUI` software, it is not possible to execute multiple projects with th `testrunner` script.
-`Soapui Multi Testrunner` was built to fulfill that task.
+**Soapui Multi Testrunner** was built to fulfill that task.
 It also reduces the configuration needed to run multiple projects from one command line, based on conventions and hierarchization
 
 # Downloads
