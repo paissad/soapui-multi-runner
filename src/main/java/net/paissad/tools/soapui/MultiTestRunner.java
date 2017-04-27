@@ -284,7 +284,7 @@ public class MultiTestRunner {
 		@Override
 		public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
 
-			if (dir.getFileName().toString().equals("settings")) {
+			if ("settings".equals(dir.getFileName().toString())) {
 				return FileVisitResult.SKIP_SUBTREE;
 			}
 			return FileVisitResult.CONTINUE;
