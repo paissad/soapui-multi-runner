@@ -20,6 +20,7 @@ import org.zeroturnaround.exec.ProcessResult;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
 import lombok.Getter;
 import net.paissad.tools.soapui.exception.MultiTestRunnerException;
 import net.paissad.tools.soapui.exception.ProcessBuilderException;
@@ -260,10 +261,9 @@ public class MultiTestRunner {
 	}
 
 	private static void setLoggingLevel(final String logLevel) {
-		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory
-		        .getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
-		final Level level = Level.valueOf(logLevel);
-		root.setLevel(level);
+		final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+		final ch.qos.logback.classic.Logger appLogger = loggerContext.getLogger("net.paissad.tools.soapui");
+		appLogger.setLevel(Level.valueOf(logLevel));
 	}
 
 	private enum PROPERTY_TYPE {

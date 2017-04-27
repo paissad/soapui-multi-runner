@@ -7,9 +7,7 @@ import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
-import org.kohsuke.args4j.OptionHandlerFilter;
 import org.kohsuke.args4j.ParserProperties;
-import org.kohsuke.args4j.spi.OptionHandler;
 
 import lombok.Getter;
 
@@ -31,7 +29,7 @@ public class MultiTestRunnerOptions {
 	@Option(name = "--in", required = true, metaVar = "<dir>", usage = "Directory containing all *-soapui-project.xml tests projects to run")
 	private String			projectsDir;
 
-	@Option(name = "--log-level", required = false, metaVar = "[LEVEL]", usage = "Sets the log level. Possible values are ERROR|WARN|INFO|DEBUG|TRACE. Default value is 'INFO'")
+	@Option(name = "--log-level", required = false, metaVar = "[level]", usage = "Sets the log level. Possible values are OFF|ERROR|WARN|INFO|DEBUG|TRACE. Default value is 'INFO'")
 	private String			logLevel;
 
 	@Argument
@@ -72,11 +70,6 @@ public class MultiTestRunnerOptions {
 		parser.printUsage(System.out);
 		System.out.println();
 
-		System.out.println("  Example: soapui-multi-testrunner " + parser.printExample(new OptionHandlerFilter() {
-
-			public boolean select(@SuppressWarnings("rawtypes") final OptionHandler o) {
-				return !o.option.help();
-			}
-		}));
+		System.out.println("  Example: soapui-multi-testrunner " + parser.printExample(filter -> !filter.option.help()));
 	}
 }
