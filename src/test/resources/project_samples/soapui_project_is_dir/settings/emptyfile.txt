@@ -1,1 +1,0 @@
-i'm here to let git know the directory which contains me !

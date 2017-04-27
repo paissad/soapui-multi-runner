@@ -1,14 +1,18 @@
 package net.paissad.tools.soapui;
 
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeoutException;
 
 import org.kohsuke.args4j.CmdLineException;
@@ -82,7 +86,7 @@ public class MultiTestRunner {
 			return 3;
 
 		} else {
-			try (final DirectoryStream<Path> stream = Files.newDirectoryStream(projectsDirPath, "*" + SOAPUI_PROJECT_LONG_SUFFIX)) {
+			try {
 
 				final List<String> minimalCommand = new LinkedList<>(
 				        Arrays.asList(new String[] { testRunnerPath.normalize().toString(), "-r", "-a", "-j", "-J" }));
@@ -105,13 +109,17 @@ public class MultiTestRunner {
 				// Add default system & global properties located in 'settings' directory, if they exist
 				getRunner().addDefaultSystemAndGlobalProps(getRunner().getOptions(), minimalCommand);
 
+				final SoapUiProjectFileVisitor soapUiProjectFileVisitor = new SoapUiProjectFileVisitor();
+				Files.walkFileTree(projectsDirPath, soapUiProjectFileVisitor);
+				final Collection<Path> soapuiProjectsFiles = soapUiProjectFileVisitor.getSoapuiProjectsFiles();
+
 				final ResultSummary globalResultSummary = new ResultSummary();
-				for (final Path path : stream) {
+				for (final Path projectFile : soapuiProjectsFiles) {
 					LOGGER.info(MULTI_TEST_RUNNER_TAG + " =============================================================================");
-					LOGGER.info(MULTI_TEST_RUNNER_TAG + " Picking SOAPUI Project : " + path.getFileName());
+					LOGGER.info(MULTI_TEST_RUNNER_TAG + " Picking SOAPUI Project : " + projectFile.getFileName());
 					LOGGER.info(MULTI_TEST_RUNNER_TAG + " =============================================================================");
 
-					final ResultSummary rs = getRunner().executeSoapuiProject(path, minimalCommand);
+					final ResultSummary rs = getRunner().executeSoapuiProject(projectFile, minimalCommand);
 					globalResultSummary.merge(rs);
 				}
 
@@ -137,34 +145,28 @@ public class MultiTestRunner {
 	 */
 	private ResultSummary executeSoapuiProject(final Path projectPath, final List<String> command) throws MultiTestRunnerException {
 
-		if (projectPath.toFile().isFile()) {
-			try {
-				List<String> runnerCommand = new ArrayList<>(command);
-				runnerCommand.add(projectPath.normalize().toString());
+		try {
+			List<String> runnerCommand = new ArrayList<>(command);
+			runnerCommand.add(projectPath.normalize().toString());
 
-				// Add properties according to the place & naming conventions
-				addPropertiesIfNecessary(projectPath, runnerCommand, PROPERTY_TYPE.SYSTEM);
-				addPropertiesIfNecessary(projectPath, runnerCommand, PROPERTY_TYPE.GLOBAL);
-				addPropertiesIfNecessary(projectPath, runnerCommand, PROPERTY_TYPE.PROJECT);
+			// Add properties according to the place & naming conventions
+			addPropertiesIfNecessary(projectPath, runnerCommand, PROPERTY_TYPE.SYSTEM);
+			addPropertiesIfNecessary(projectPath, runnerCommand, PROPERTY_TYPE.GLOBAL);
+			addPropertiesIfNecessary(projectPath, runnerCommand, PROPERTY_TYPE.PROJECT);
 
-				final ProcessResult processResult = new ProcessExecutor().destroyOnExit().command(runnerCommand).redirectOutput(System.out)
-				        .readOutput(true).execute();
+			final ProcessResult processResult = new ProcessExecutor().destroyOnExit().command(runnerCommand).redirectOutput(System.out)
+			        .readOutput(true).execute();
 
-				final ResultSummary rs = ResultSummary.build(processResult.outputString());
-				rs.updateExitCode(processResult.getExitValue());
+			final ResultSummary rs = ResultSummary.build(processResult.outputString());
+			rs.updateExitCode(processResult.getExitValue());
 
-				return rs;
+			return rs;
 
-			} catch (InvalidExitValueException | IOException | InterruptedException | TimeoutException | NumberFormatException
-			        | ProcessBuilderException e) {
-				final String errMsg = "Error while running " + projectPath.getFileName();
-				LOGGER.error(MULTI_TEST_RUNNER_TAG + " " + errMsg);
-				throw new MultiTestRunnerException(errMsg, e);
-			}
-		} else {
-			final String errMsg = MULTI_TEST_RUNNER_TAG + " " + projectPath.getFileName() + " is not file.";
-			LOGGER.error(errMsg);
-			throw new MultiTestRunnerException(errMsg);
+		} catch (InvalidExitValueException | IOException | InterruptedException | TimeoutException | NumberFormatException
+		        | ProcessBuilderException e) {
+			final String errMsg = "Error while running " + projectPath.getFileName();
+			LOGGER.error(MULTI_TEST_RUNNER_TAG + " " + errMsg);
+			throw new MultiTestRunnerException(errMsg, e);
 		}
 	}
 
@@ -204,7 +206,7 @@ public class MultiTestRunner {
 
 		// Check the existence of the properties file , first !
 		final Path propertiesPath = Paths.get(projectPath.getParent().normalize().toString(), projectPath.getFileName().toString()
-		        .replaceAll("(.*?)" + SOAPUI_PROJECT_LONG_SUFFIX + ".*", "$1." + type.name().toLowerCase() + ".properties"));
+		        .replaceAll("(.*?)" + SOAPUI_PROJECT_LONG_SUFFIX + ".*", "$1." + type.name().toLowerCase(Locale.US) + ".properties"));
 
 		if (propertiesPath.toFile().isFile() && Files.isReadable(propertiesPath)) {
 
@@ -268,5 +270,33 @@ public class MultiTestRunner {
 
 	private enum PROPERTY_TYPE {
 		SYSTEM, GLOBAL, PROJECT, OTHER;
+	}
+
+	private class SoapUiProjectFileVisitor extends SimpleFileVisitor<Path> {
+
+		@Getter
+		private Collection<Path> soapuiProjectsFiles;
+
+		public SoapUiProjectFileVisitor() {
+			this.soapuiProjectsFiles = new LinkedList<>();
+		}
+
+		@Override
+		public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
+
+			if (dir.getFileName().toString().equals("settings")) {
+				return FileVisitResult.SKIP_SUBTREE;
+			}
+			return FileVisitResult.CONTINUE;
+		}
+
+		@Override
+		public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+			if (file.getFileName().toString().endsWith(SOAPUI_PROJECT_LONG_SUFFIX)) {
+				LOGGER.trace(" *** SoapUI project file found : {}", file);
+				getSoapuiProjectsFiles().add(file);
+			}
+			return FileVisitResult.CONTINUE;
+		}
 	}
 }

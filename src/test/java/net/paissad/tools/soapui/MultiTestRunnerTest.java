@@ -146,15 +146,6 @@ public class MultiTestRunnerTest {
 	}
 
 	@Test
-	public void testMainSoapuiProjectIsNotAFile() throws URISyntaxException, MultiTestRunnerException {
-		thrown.expect(MultiTestRunnerException.class);
-		thrown.expectMessage("Project-1-soapui-project.xml is not file");
-		final List<String> setupOptionsList = getSetupOptionsAsList("soapui_project_is_dir");
-		final String[] args = setupOptionsList.stream().toArray(size -> new String[size]);
-		this.multiTestRunner.proxyMain(args);
-	}
-
-	@Test
 	public void testMainProjectWithItsOwnProperties() throws URISyntaxException, MultiTestRunnerException {
 		final List<String> setupOptionsList = getSetupOptionsAsList("project_one_project_props_with_project_conf");
 		final String[] args = setupOptionsList.stream().toArray(size -> new String[size]);
