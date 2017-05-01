@@ -173,6 +173,7 @@
       <id>sourceforge-repository</id>
       <name>SourceForge SoapUI Multi Testrunner Repository (releases)</name>
       <url>scp://frs.sourceforge.net:/home/frs/project/soapui-multi-testrunner/</url>
+      <!-- scp target/soapui-multi-testrunner-x.y.z.tar.gz paissad@frs.sourceforge.net:/home/frs/project/soapui-multi-testrunner/ -->
     </repository>
   </distributionManagement>
 
