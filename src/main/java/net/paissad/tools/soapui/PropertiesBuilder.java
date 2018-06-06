@@ -1,8 +1,8 @@
 package net.paissad.tools.soapui;
 
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
+import java.io.Reader;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -46,10 +46,10 @@ public class PropertiesBuilder {
 
 	private PropertiesBuilder buildProperties(final Path propertiesPath, final String prefix) throws ProcessBuilderException {
 
-		try (final InputStream in = Files.newInputStream(propertiesPath)) {
+		try (final Reader propsReader = new FileReader(propertiesPath.toFile())) {
 
 			final Properties p = new Properties();
-			p.load(in);
+			p.load(propsReader);
 			Iterator<Entry<Object, Object>> iterator = p.entrySet().iterator();
 
 			while (iterator.hasNext()) {
